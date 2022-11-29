@@ -1,7 +1,7 @@
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
-const AddNewThread = require('../AddNewThread');
+const AddNewThread = require('../AddNewThreadUseCase');
 
 describe('AddNewThread', () => {
   it('should orchestrating the add thread action correctly', async () => {
@@ -38,7 +38,6 @@ describe('AddNewThread', () => {
       new NewThread({
         title: 'New Thread',
         body: 'This is a kind of thread',
-        owner: 'user-123',
       })
     );
   });
