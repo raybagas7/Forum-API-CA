@@ -1,21 +1,21 @@
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
-const AddNewThread = require('../AddNewThreadUseCase');
+const AddNewThreadUseCase = require('../AddNewThreadUseCase');
 
 describe('AddNewThread', () => {
   it('should orchestrating the add thread action correctly', async () => {
     // Arrange
+    const fakeOwner = 'user-123';
     const useCasePayload = {
       title: 'New Thread',
       body: 'This is a kind of thread',
-      owner: 'user-123',
     };
 
     const expectedNewThread = new AddedThread({
       id: 'thread-123',
       title: useCasePayload.title,
-      owner: useCasePayload.owner,
+      owner: fakeOwner,
     });
 
     const mockThreadRepository = new ThreadRepository();
@@ -25,12 +25,15 @@ describe('AddNewThread', () => {
       .mockImplementation(() => Promise.resolve(expectedNewThread));
 
     //* make use case instance */
-    const getNewThreadUseCase = new AddNewThread({
+    const getNewThreadUseCase = new AddNewThreadUseCase({
       threadRepository: mockThreadRepository,
     });
 
     // Action
-    const addedThread = await getNewThreadUseCase.execute(useCasePayload);
+    const addedThread = await getNewThreadUseCase.execute(
+      useCasePayload,
+      fakeOwner
+    );
 
     // Assert
     expect(addedThread).toStrictEqual(expectedNewThread);
@@ -38,7 +41,8 @@ describe('AddNewThread', () => {
       new NewThread({
         title: 'New Thread',
         body: 'This is a kind of thread',
-      })
+      }),
+      fakeOwner
     );
   });
 });

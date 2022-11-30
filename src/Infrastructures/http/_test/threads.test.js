@@ -1,19 +1,55 @@
+const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
 const ThreadsTableHelper = require('../../../../tests/ThreadsTableHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const container = require('../../container');
 const pool = require('../../database/postgres/pool');
 const createServer = require('../createServer');
+let token;
 
 describe('/threads endpoint', () => {
+  beforeEach(async () => {
+    const server = await createServer(container);
+
+    // Add User
+    await server.inject({
+      method: 'POST',
+      url: '/users',
+      payload: {
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      },
+    });
+
+    // Get Token
+    const responseToken = await server.inject({
+      method: 'POST',
+      url: '/authentications',
+      payload: {
+        username: 'dicoding',
+        password: 'secret',
+      },
+    });
+
+    const {
+      data: { accessToken },
+    } = JSON.parse(responseToken.payload);
+
+    token = accessToken;
+  });
+
   afterAll(async () => {
     await pool.end();
   });
 
   afterEach(async () => {
     await ThreadsTableHelper.cleanTable();
+    await UsersTableTestHelper.cleanTable();
+    await AuthenticationsTableTestHelper.cleanTable();
   });
 
   describe('when POST /threads', () => {
-    it('should response 201 and persisted user', async () => {
+    it('should response 201 and persisted thread', async () => {
       // Arrange
       const requestPayload = {
         title: 'New Thread',
@@ -27,6 +63,7 @@ describe('/threads endpoint', () => {
         method: 'POST',
         url: '/threads',
         payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       // Assert
@@ -49,6 +86,7 @@ describe('/threads endpoint', () => {
         method: 'POST',
         url: '/threads',
         payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       // Assert
@@ -74,6 +112,7 @@ describe('/threads endpoint', () => {
         method: 'POST',
         url: '/threads',
         payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       // Assert
@@ -99,6 +138,7 @@ describe('/threads endpoint', () => {
         method: 'POST',
         url: '/threads',
         payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       // Assert
@@ -107,6 +147,32 @@ describe('/threads endpoint', () => {
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
         'Failed to make a new thread, title meets the characters length limit'
+      );
+    });
+
+    it('should response 401 when authorization token is invalid', async () => {
+      // Arrange
+      const requestPayload = {
+        title: 'New Thread',
+        body: 'This is a kind of thread',
+      };
+
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: requestPayload,
+        headers: { Authorization: `Bearer fakeToken` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual(
+        'Failed to make a new thread, authorization is invalid'
       );
     });
   });

@@ -1,0 +1,16 @@
+class CommentRepository {
+  async addComment(addComment, owner) {
+    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+  async deleteCommentById(id, owner) {
+    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+  async addRepliesByCommentId(addReplies, owner) {
+    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+  async deleteRepliesByCommentId(id, owner) {
+    throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+}
+
+module.exports = CommentRepository;

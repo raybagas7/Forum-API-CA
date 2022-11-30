@@ -1,3 +1,4 @@
+const AuthenticationError = require('./AuthenticationError');
 const InvariantError = require('./InvariantError');
 
 const DomainErrorTranslator = {
@@ -41,6 +42,9 @@ DomainErrorTranslator._directories = {
   ),
   'NEW_THREAD.TITLE_LIMIT_CHAR': new InvariantError(
     'Failed to make a new thread, title meets the characters length limit'
+  ),
+  'Invalid token structure': new AuthenticationError(
+    'Failed to make a new thread, authorization is invalid'
   ),
 };
 

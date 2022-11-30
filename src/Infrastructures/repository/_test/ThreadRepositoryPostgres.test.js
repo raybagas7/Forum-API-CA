@@ -1,11 +1,17 @@
 const ThreadsTableHelper = require('../../../../tests/ThreadsTableHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 
 describe('ThreadRepositoryPostgres', () => {
+  beforeEach(async () => {
+    await UsersTableTestHelper.addUser({ username: 'test' });
+  });
+
   afterEach(async () => {
+    await UsersTableTestHelper.cleanTable();
     await ThreadsTableHelper.cleanTable();
   });
 
