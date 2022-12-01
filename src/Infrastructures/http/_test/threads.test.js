@@ -150,7 +150,7 @@ describe('/threads endpoint', () => {
       );
     });
 
-    it('should response 401 when authorization token is invalid', async () => {
+    it('should response 401 when unauthorized', async () => {
       // Arrange
       const requestPayload = {
         title: 'New Thread',

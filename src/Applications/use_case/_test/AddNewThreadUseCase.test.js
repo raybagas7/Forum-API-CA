@@ -4,7 +4,7 @@ const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const AddNewThreadUseCase = require('../AddNewThreadUseCase');
 
 describe('AddNewThread', () => {
-  it('should orchestrating the add thread action correctly', async () => {
+  it('should orchestrating the add new thread action correctly', async () => {
     // Arrange
     const fakeOwner = 'user-123';
     const useCasePayload = {

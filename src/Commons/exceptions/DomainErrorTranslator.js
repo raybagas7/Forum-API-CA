@@ -46,6 +46,12 @@ DomainErrorTranslator._directories = {
   'Invalid token structure': new AuthenticationError(
     'Failed to make a new thread, authorization is invalid'
   ),
+  'NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError(
+    'Failed to make a new comment, the payload did not meet needed property'
+  ),
+  'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError(
+    'Failed to make a new comment, invalid data type'
+  ),
 };
 
 module.exports = DomainErrorTranslator;
