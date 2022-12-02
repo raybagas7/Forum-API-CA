@@ -3,8 +3,9 @@
 exports.up = (pgm) => {
   pgm.addColumn('comments', {
     date: {
-      type: 'TEXT',
+      type: 'TIMESTAMP',
       notNull: true,
+      default: pgm.func('current_timestamp'),
     },
   });
 };
