@@ -4,7 +4,7 @@ const NewComment = require('../../../Domains/comments/entities/NewComment');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const AddNewCommentUseCase = require('../AddNewCommentUseCase');
 
-describe('AddNewComment', () => {
+describe('AddNewCommentUseCase', () => {
   it('should orchestrating the add new comment action correctly', async () => {
     // Arrange
     const fakeOwner = 'user-123';

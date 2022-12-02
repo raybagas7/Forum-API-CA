@@ -1,6 +1,9 @@
 const CommentsTableHelper = require('../../../../tests/CommentsTableHelper');
 const ThreadsTableHelper = require('../../../../tests/ThreadsTableHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
+const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const NewComment = require('../../../Domains/comments/entities/NewComment');
 const pool = require('../../database/postgres/pool');
@@ -86,6 +89,83 @@ describe('CommentRepositoryPostgres', () => {
           owner: 'user-999',
         })
       );
+    });
+  });
+
+  describe('verifyCommentOwner', () => {
+    it('should throw NotFoundError if comment not exist', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      const fakeCommentId = 'comment-999';
+      const fakeOwner = 'user-123';
+      await CommentsTableHelper.addComment({ content: 'Test Comment' });
+
+      // Action & Assert
+      await expect(
+        commentRepository.verifyCommentOwner(fakeCommentId, fakeOwner)
+      ).rejects.toThrow(NotFoundError);
+    });
+
+    it('should throw AuthorizationError if owner unauthorized to the comment', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      const fakeCommentId = 'comment-123';
+      const fakeOwner = 'user-999';
+      await CommentsTableHelper.addComment({ content: 'Test Comment' });
+
+      // Action & Assert
+      await expect(
+        commentRepository.verifyCommentOwner(fakeCommentId, fakeOwner)
+      ).rejects.toThrow(AuthorizationError);
+    });
+
+    it('should not throw InvariantError or AuthorizationError if comment exist and owne have an access', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const fakeCommentId = 'comment-123';
+      const fakeOwner = 'user-123';
+      const commentRepository = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      await CommentsTableHelper.addComment({ content: 'Test Comment' });
+
+      // Action & Assert
+      await expect(
+        commentRepository.verifyCommentOwner(fakeCommentId, fakeOwner)
+      ).resolves.not.toThrow(InvariantError);
+      await expect(
+        commentRepository.verifyCommentOwner(fakeCommentId, fakeOwner)
+      ).resolves.not.toThrow(AuthorizationError);
+    });
+  });
+
+  describe('deleteCommentById', () => {
+    it('should delete comment from database', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      const fakeCommentId = 'comment-123';
+      const fakeThreadId = 'thread-123';
+      await CommentsTableHelper.addComment({ content: 'Test Comment' });
+
+      // Action & Assert
+      const commentStatus = await commentRepository.deleteCommentById(
+        fakeThreadId,
+        fakeCommentId
+      );
+      expect(commentStatus.is_delete).toStrictEqual(true);
     });
   });
 });

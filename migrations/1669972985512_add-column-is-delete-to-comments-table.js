@@ -1,13 +1,15 @@
 /* eslint-disable camelcase */
 
 exports.up = (pgm) => {
-  pgm.addColumn('threads', {
+  pgm.addColumn('comments', {
     is_delete: {
       type: 'BOOLEAN',
+      default: 'false',
+      notNull: true,
     },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropColumn('threads', 'is_delete');
+  pgm.dropColumn('comments', 'is_delete');
 };
