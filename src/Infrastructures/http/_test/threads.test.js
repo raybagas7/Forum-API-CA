@@ -1,4 +1,5 @@
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
+const CommentsTableHelper = require('../../../../tests/CommentsTableHelper');
 const ThreadsTableHelper = require('../../../../tests/ThreadsTableHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const container = require('../../container');
@@ -46,6 +47,7 @@ describe('/threads endpoint', () => {
     await ThreadsTableHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await AuthenticationsTableTestHelper.cleanTable();
+    await CommentsTableHelper.cleanTable();
   });
 
   describe('when POST /threads', () => {
@@ -174,6 +176,32 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).toEqual(
         'Failed to make a new thread, authorization is invalid'
       );
+    });
+  });
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and return detail thread', async () => {
+      // Arrange
+      const fakeThreadId = 'thread-123';
+      await UsersTableTestHelper.addUser({ username: 'test' });
+      await ThreadsTableHelper.addThread({ id: fakeThreadId, title: 'test' });
+      await CommentsTableHelper.addComment({ id: 'comment-123' });
+      await CommentsTableHelper.addComment({ id: 'comment-321' });
+      await CommentsTableHelper.deleteCommentById(fakeThreadId, 'comment-321');
+
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${fakeThreadId}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
     });
   });
 });

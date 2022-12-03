@@ -111,12 +111,6 @@ describe('ThreadRepositoryPostgres', () => {
       );
       expect(getDetailThread.id).toBe(fakeThreadId);
       expect(getDetailThread.comments).toHaveLength(2);
-      expect(getDetailThread.comments[0].content).toStrictEqual(
-        'This thread is about a new thread'
-      );
-      expect(getDetailThread.comments[1].content).toStrictEqual(
-        '**komentar telah dihapus**'
-      );
     });
   });
 });
