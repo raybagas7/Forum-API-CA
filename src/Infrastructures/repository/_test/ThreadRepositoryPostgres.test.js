@@ -1,5 +1,7 @@
+const CommentsTableHelper = require('../../../../tests/CommentsTableHelper');
 const ThreadsTableHelper = require('../../../../tests/ThreadsTableHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const pool = require('../../database/postgres/pool');
@@ -69,6 +71,51 @@ describe('ThreadRepositoryPostgres', () => {
           title: 'New Thread',
           owner: 'user-123',
         })
+      );
+    });
+  });
+
+  describe('getDetailThread', () => {
+    it('should throw NotFoundError if thread not exist', async () => {
+      // Arrange
+      const fakeThreadId = 'thread-123';
+      await ThreadsTableHelper.addThread({ id: fakeThreadId, title: 'test' });
+      const fakeIdGenerator = () => '123'; // STUB
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      expect(
+        threadRepositoryPostgres.getDetailThread('xxx')
+      ).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should get thread from database', async () => {
+      // Arrange
+      const fakeThreadId = 'thread-123';
+      await ThreadsTableHelper.addThread({ id: fakeThreadId, title: 'test' });
+      await CommentsTableHelper.addComment({ id: 'comment-123' });
+      await CommentsTableHelper.addComment({ id: 'comment-321' });
+      await CommentsTableHelper.deleteCommentById(fakeThreadId, 'comment-321');
+      const fakeIdGenerator = () => '123'; // STUB
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action &  Assert
+      const getDetailThread = await threadRepositoryPostgres.getDetailThread(
+        fakeThreadId
+      );
+      expect(getDetailThread.id).toBe(fakeThreadId);
+      expect(getDetailThread.comments).toHaveLength(2);
+      expect(getDetailThread.comments[0].content).toStrictEqual(
+        'This thread is about a new thread'
+      );
+      expect(getDetailThread.comments[1].content).toStrictEqual(
+        '**komentar telah dihapus**'
       );
     });
   });

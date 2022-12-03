@@ -127,7 +127,7 @@ describe('CommentRepositoryPostgres', () => {
       ).rejects.toThrow(AuthorizationError);
     });
 
-    it('should not throw InvariantError or AuthorizationError if comment exist and owne have an access', async () => {
+    it('should not throw InvariantError or AuthorizationError if comment exist and owner have an access', async () => {
       // Arrange
       const fakeIdGenerator = () => '123';
       const fakeCommentId = 'comment-123';

@@ -29,6 +29,17 @@ const CommentsTableHelper = {
   async cleanTable() {
     await pool.query('DELETE FROM comments WHERE 1=1');
   },
+
+  async deleteCommentById(threadId, commentId) {
+    const query = {
+      text: 'UPDATE comments SET is_delete = true WHERE thread_id = $1 AND id = $2 RETURNING is_delete',
+      values: [threadId, commentId],
+    };
+
+    const result = pool.query(query);
+
+    return result.rows;
+  },
 };
 
 module.exports = CommentsTableHelper;
