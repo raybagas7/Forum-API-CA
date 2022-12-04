@@ -203,5 +203,24 @@ describe('/threads endpoint', () => {
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.thread).toBeDefined();
     });
+
+    it('should response 404 when thread not exist', async () => {
+      // Arrange
+      const fakeThreadId = 'thread-123';
+
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${fakeThreadId}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual("Thread doesn't exist");
+    });
   });
 });

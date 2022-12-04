@@ -23,10 +23,10 @@ describe('a NewComment entities', () => {
     );
   });
 
-  it('should create newThread object correctly', () => {
+  it('should create newComment object correctly', () => {
     // Arrange
     const payload = {
-      content: 'This thread is about a new thread',
+      content: 'This is comment',
     };
 
     // Action

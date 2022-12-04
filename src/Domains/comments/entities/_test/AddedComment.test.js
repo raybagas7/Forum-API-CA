@@ -28,11 +28,11 @@ describe('a AddedComment entities', () => {
     );
   });
 
-  it('should create newThread object correctly', () => {
+  it('should crete addedComment object correctly', () => {
     // Arrange
     const payload = {
       id: 'comment-123',
-      content: 'This thread is about a new thread',
+      content: 'This is Comment',
       owner: 'user-123',
     };
 

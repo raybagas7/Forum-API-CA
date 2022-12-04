@@ -103,7 +103,6 @@ describe('CommentRepositoryPostgres', () => {
       const fakeCommentId = 'comment-999';
       const fakeOwner = 'user-123';
       await CommentsTableHelper.addComment({ content: 'Test Comment' });
-
       // Action & Assert
       await expect(
         commentRepository.verifyCommentOwner(fakeCommentId, fakeOwner)

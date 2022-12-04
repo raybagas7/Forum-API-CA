@@ -109,6 +109,7 @@ describe('ThreadRepositoryPostgres', () => {
       const getDetailThread = await threadRepositoryPostgres.getDetailThread(
         fakeThreadId
       );
+
       expect(getDetailThread.id).toBe(fakeThreadId);
       expect(getDetailThread.comments).toHaveLength(2);
     });
