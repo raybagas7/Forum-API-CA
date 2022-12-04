@@ -66,7 +66,21 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const resultComments = await this._pool.query(queryComments);
 
-    return mapDBToModelDetailThread(resultThread.rows[0], resultComments.rows);
+    const queryReplies = {
+      text: `SELECT replies.*, users.username
+      FROM replies
+      LEFT JOIN users ON replies.owner = users.id
+      WHERE replies.thread_id = $1
+      ORDER BY date`,
+      values: [id],
+    };
+    const resultReplies = await this._pool.query(queryReplies);
+
+    return mapDBToModelDetailThread(
+      resultThread.rows[0],
+      resultComments.rows,
+      resultReplies.rows
+    );
   }
 }
 

@@ -52,6 +52,12 @@ DomainErrorTranslator._directories = {
   'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError(
     'Failed to make a new comment, invalid data type'
   ),
+  'NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError(
+    'Failed to make a new reply, the payload did not meet needed property'
+  ),
+  'NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError(
+    'Failed to make a new reply, invalid data type'
+  ),
 };
 
 module.exports = DomainErrorTranslator;

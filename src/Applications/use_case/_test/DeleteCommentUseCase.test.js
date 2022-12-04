@@ -4,7 +4,7 @@ const DeleteCommentUseCase = require('../DeleteCommentUseCase');
 describe('DeleteCommentUseCase.test', () => {
   it('should throw error if parameters not contain one of or both owner id or comment id', async () => {
     // Arrange
-    fakeOwnerId = 'user-123';
+    const fakeOwnerId = 'user-123';
     const deleteCommentUseCase = new DeleteCommentUseCase({});
 
     // Action & Assert
@@ -17,9 +17,9 @@ describe('DeleteCommentUseCase.test', () => {
 
   it('should throw error if owner id or comment id not string type', async () => {
     //Arrange
-    fakeThreadId = true;
-    fakeOwnerId = 123;
-    fakeCommentId = ['comment-id'];
+    const fakeThreadId = true;
+    const fakeOwnerId = 123;
+    const fakeCommentId = ['comment-id'];
 
     const deleteCommentUseCase = new DeleteCommentUseCase({});
 
@@ -33,9 +33,9 @@ describe('DeleteCommentUseCase.test', () => {
 
   it('should ochestrating delete comment action correctly', async () => {
     // Arramge
-    fakeThreadId = 'thread-123';
-    fakeOwnerId = 'user-123';
-    fakeCommentId = 'comment-123';
+    const fakeThreadId = 'thread-123';
+    const fakeOwnerId = 'user-123';
+    const fakeCommentId = 'comment-123';
     const mockCommentRepository = new CommentRepository();
 
     mockCommentRepository.verifyCommentOwner = jest
@@ -49,7 +49,7 @@ describe('DeleteCommentUseCase.test', () => {
       commentRepository: mockCommentRepository,
     });
 
-    // Act
+    // Action
     await deleteCommentUseCase.execute(
       fakeThreadId,
       fakeCommentId,

@@ -9,7 +9,7 @@ const createServer = require('../createServer');
 let token;
 let threadId;
 
-describe('/{threadId}/comment endpoint', () => {
+describe('/threads/{threadId}/comment endpoint', () => {
   beforeEach(async () => {
     const server = await createServer(container);
 
@@ -231,7 +231,7 @@ describe('/{threadId}/comment endpoint', () => {
 
       const server = await createServer(container);
 
-      // Add Thread
+      // Add Comment
       const responseComment = await server.inject({
         method: 'POST',
         url: `/threads/${threadId}/comments`,
@@ -266,7 +266,7 @@ describe('/{threadId}/comment endpoint', () => {
 
       const server = await createServer(container);
 
-      // Add Thread
+      // Add Comment
       const responseComment = await server.inject({
         method: 'POST',
         url: `/threads/${threadId}/comments`,
@@ -304,7 +304,7 @@ describe('/{threadId}/comment endpoint', () => {
 
       const server = await createServer(container);
 
-      // Add Thread
+      // Add Comment
       const responseComment = await server.inject({
         method: 'POST',
         url: `/threads/${threadId}/comments`,
@@ -330,6 +330,271 @@ describe('/{threadId}/comment endpoint', () => {
       expect(response.statusCode).toEqual(404);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual("Comment doesn't exist");
+    });
+  });
+
+  describe('when POST /threads/{threadId}/comments/{commentId}/replies', () => {
+    it('should response 201 and persisted reply', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'This is my reply',
+      };
+
+      const server = await createServer(container);
+
+      // Add Comment
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedComment: { id },
+        },
+      } = JSON.parse(responseComment.payload);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments/${id}/replies`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(201);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.addedReply).toBeDefined();
+    });
+
+    it('should response 404 when comment id not exist', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'This is my reply',
+      };
+
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments/xxx/replies`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual("Comment doesn't exist");
+    });
+
+    it('should response 404 when thread id not exist', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'This is my reply',
+      };
+
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/xxx/comments/xxx/replies`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual("Thread doesn't exist");
+    });
+
+    it('should response 401 when unauthorized', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'This is my reply',
+      };
+
+      const server = await createServer(container);
+
+      // Add Comment
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedComment: { id },
+        },
+      } = JSON.parse(responseComment.payload);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments/${id}/replies`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer xxx` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual(
+        'Failed to make a new thread, authorization is invalid'
+      );
+    });
+  });
+
+  describe('when DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}', () => {
+    it('should response 201 and delete reply', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'New reply for this comment',
+      };
+
+      const server = await createServer(container);
+
+      // Add Comment
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedComment: { id },
+        },
+      } = JSON.parse(responseComment.payload);
+
+      // Add Reply
+      const responseReply = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments/${id}/replies`,
+        payload: {
+          content: 'This is my reply',
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedReply: { id: replyId },
+        },
+      } = JSON.parse(responseReply.payload);
+
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadId}/comments/${id}/replies/${replyId}`,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+    });
+
+    it('should response 401 when unauthorized', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'New reply for this comment',
+      };
+
+      const server = await createServer(container);
+
+      // Add Comment
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedComment: { id },
+        },
+      } = JSON.parse(responseComment.payload);
+
+      const responseReply = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments/${id}/replies`,
+        payload: {
+          content: 'This is my reply',
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedReply: { id: replyId },
+        },
+      } = JSON.parse(responseReply.payload);
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadId}/comments/${id}/replies/${replyId}`,
+        headers: { Authorization: `Bearer xxx` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual(
+        'Failed to make a new thread, authorization is invalid'
+      );
+    });
+
+    it('should reponse 404 when reply id not exist', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'New reply for this comment',
+      };
+
+      const server = await createServer(container);
+
+      // Add Comment
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedComment: { id },
+        },
+      } = JSON.parse(responseComment.payload);
+
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadId}/comments/${id}/replies/xxx`,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual("Reply doesn't exist");
     });
   });
 });

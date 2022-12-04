@@ -1,5 +1,7 @@
 const AddNewCommentUseCase = require('../../../../Applications/use_case/AddNewCommentUseCase');
+const AddNewRepliesUseCase = require('../../../../Applications/use_case/AddNewRepliesUseCase');
 const DeleteCommentUseCase = require('../../../../Applications/use_case/DeleteCommentUseCase');
+const DeleteReplyUseCase = require('../../../../Applications/use_case/DeleteReplyUseCase');
 
 class CommentHandler {
   constructor(container) {
@@ -7,6 +9,8 @@ class CommentHandler {
 
     this.postCommentHandler = this.postCommentHandler.bind(this);
     this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
+    this.postReplyHandler = this.postReplyHandler.bind(this);
+    this.deleteReplyHandler = this.deleteReplyHandler.bind(this);
   }
 
   async postCommentHandler(request, h) {
@@ -42,6 +46,48 @@ class CommentHandler {
     const { id: owner } = request.auth.credentials;
 
     await deleteCommentUseCase.execute(thread_Id, comment_id, owner);
+
+    return { status: 'success' };
+  }
+
+  async postReplyHandler(request, h) {
+    const addNewRepliesUseCase = this._container.getInstance(
+      AddNewRepliesUseCase.name
+    );
+
+    const { threadId: thread_Id, commentId: comment_id } = request.params;
+    const { id: owner } = request.auth.credentials;
+
+    const addedReply = await addNewRepliesUseCase.execute(
+      request.payload,
+      owner,
+      thread_Id,
+      comment_id
+    );
+
+    const response = h.response({
+      status: 'success',
+      data: {
+        addedReply,
+      },
+    });
+    response.code(201);
+    return response;
+  }
+
+  async deleteReplyHandler(request) {
+    const deleteReplyUseCase = this._container.getInstance(
+      DeleteReplyUseCase.name
+    );
+
+    const {
+      threadId: thread_Id,
+      commentId: comment_id,
+      replyId: reply_id,
+    } = request.params;
+    const { id: owner } = request.auth.credentials;
+
+    await deleteReplyUseCase.execute(thread_Id, comment_id, reply_id, owner);
 
     return { status: 'success' };
   }

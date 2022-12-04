@@ -1,4 +1,4 @@
-const mapDBToModelDetailThread = (thread, comments) => {
+const mapDBToModelDetailThread = (thread, comments, replies) => {
   const result = {
     id: thread.id,
     title: thread.title,
@@ -12,6 +12,27 @@ const mapDBToModelDetailThread = (thread, comments) => {
           username: comment.username,
           date: comment.date,
           content: comment.content,
+          replies: replies.flatMap((reply) => {
+            if (reply.comment_id !== comment.id) {
+              return [];
+            }
+
+            if (reply.is_delete === false) {
+              return {
+                id: reply.id,
+                username: reply.username,
+                date: reply.date,
+                content: reply.content,
+              };
+            }
+
+            return {
+              id: reply.id,
+              username: reply.username,
+              date: reply.date,
+              content: '**balasan telah dihapus**',
+            };
+          }),
         };
       } else {
         return {

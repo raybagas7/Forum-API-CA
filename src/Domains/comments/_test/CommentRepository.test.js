@@ -12,13 +12,16 @@ describe('ThreadRepository interface', () => {
     await expect(commentRepository.deleteCommentById('')).rejects.toThrowError(
       'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
     );
-    await expect(
-      commentRepository.addRepliesByCommentId({})
-    ).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-    await expect(
-      commentRepository.deleteRepliesByCommentId('')
-    ).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(commentRepository.deleteCommentById({})).rejects.toThrowError(
+      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+    );
+    await expect(commentRepository.deleteReplyById('')).rejects.toThrowError(
+      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+    );
     await expect(commentRepository.verifyCommentOwner('')).rejects.toThrowError(
+      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+    );
+    await expect(commentRepository.verifyReplyOwner('')).rejects.toThrowError(
       'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
     );
     await expect(

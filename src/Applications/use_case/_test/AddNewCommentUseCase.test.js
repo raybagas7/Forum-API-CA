@@ -22,12 +22,12 @@ describe('AddNewCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
     const mockThreadRepository = new ThreadRepository();
 
-    mockCommentRepository.addComment = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(expectedNewComment));
     mockThreadRepository.checkThreadAvailability = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
+    mockCommentRepository.addComment = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(expectedNewComment));
 
     const getNewCommentUseCase = new AddNewCommentUseCase({
       commentRepository: mockCommentRepository,
