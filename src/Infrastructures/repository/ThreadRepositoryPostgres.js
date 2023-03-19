@@ -56,31 +56,33 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       throw new NotFoundError("Thread doesn't exist");
     }
 
-    const queryComments = {
-      text: `SELECT comments.*, users.username
-      FROM comments
-      LEFT JOIN users ON comments.owner = users.id
-      WHERE thread_id = $1`,
-      values: [id],
-    };
+    return resultThread.rows[0];
 
-    const resultComments = await this._pool.query(queryComments);
+    // const queryComments = {
+    //   text: `SELECT comments.*, users.username
+    //   FROM comments
+    //   LEFT JOIN users ON comments.owner = users.id
+    //   WHERE thread_id = $1`,
+    //   values: [id],
+    // };
 
-    const queryReplies = {
-      text: `SELECT replies.*, users.username
-      FROM replies
-      LEFT JOIN users ON replies.owner = users.id
-      WHERE replies.thread_id = $1
-      ORDER BY date`,
-      values: [id],
-    };
-    const resultReplies = await this._pool.query(queryReplies);
+    // const resultComments = await this._pool.query(queryComments);
 
-    return mapDBToModelDetailThread(
-      resultThread.rows[0],
-      resultComments.rows,
-      resultReplies.rows
-    );
+    // const queryReplies = {
+    //   text: `SELECT replies.*, users.username
+    //   FROM replies
+    //   LEFT JOIN users ON replies.owner = users.id
+    //   WHERE replies.thread_id = $1
+    //   ORDER BY date`,
+    //   values: [id],
+    // };
+    // const resultReplies = await this._pool.query(queryReplies);
+
+    // return mapDBToModelDetailThread(
+    //   resultThread.rows[0],
+    //   resultComments.rows,
+    //   resultReplies.rows
+    // );
   }
 }
 

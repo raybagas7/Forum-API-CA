@@ -112,18 +112,12 @@ describe('ThreadRepositoryPostgres', () => {
         fakeThreadId
       );
 
-      const deletedComment = getDetailThread.comments.filter(
-        (comment) => comment.id === 'comment-321'
-      );
-
-      const repliedComment = getDetailThread.comments.filter(
-        (comment) => comment.id === 'comment-123'
-      );
-
       expect(getDetailThread.id).toBe(fakeThreadId);
-      expect(getDetailThread.comments).toHaveLength(2);
-      expect(deletedComment[0].content).toBe('**komentar telah dihapus**');
-      expect(repliedComment[0].replies).toHaveLength(1);
+      expect(getDetailThread.title).toBe('test');
+      expect(getDetailThread.body).toBe('This is a kind of thread');
+      expect(getDetailThread.owner).toBe('user-123');
+      expect(getDetailThread.date).toBeInstanceOf(Date);
+      expect(getDetailThread.username).toBe('test');
     });
   });
 });

@@ -10,6 +10,36 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     this._idGenerator = idGenerator;
   }
 
+  async addRepliesByCommentId(newReply, owner, thread_id, comment_id) {
+    const { content } = newReply;
+    const id = `reply-${this._idGenerator()}`;
+
+    const query = {
+      text: 'INSERT INTO replies VALUES ($1, $2, $3, $4, $5) RETURNING id, content, owner',
+      values: [id, content, owner, thread_id, comment_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return new AddedReply({
+      ...result.rows[0],
+    });
+  }
+
+  async getReplyByThreadId(id) {
+    const queryReplies = {
+      text: `SELECT replies.*, users.username
+      FROM replies
+      LEFT JOIN users ON replies.owner = users.id
+      WHERE replies.thread_id = $1
+      ORDER BY date`,
+      values: [id],
+    };
+    const resultReplies = await this._pool.query(queryReplies);
+
+    return resultReplies.rows;
+  }
+
   async verifyReplyOwner(replyId, owner) {
     const query = {
       text: 'SELECT * FROM replies WHERE id = $1',
@@ -38,22 +68,6 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     const result = await this._pool.query(query);
 
     return result.rows[0];
-  }
-
-  async addRepliesByCommentId(newReply, owner, thread_id, comment_id) {
-    const { content } = newReply;
-    const id = `reply-${this._idGenerator()}`;
-
-    const query = {
-      text: 'INSERT INTO replies VALUES ($1, $2, $3, $4, $5) RETURNING id, content, owner',
-      values: [id, content, owner, thread_id, comment_id],
-    };
-
-    const result = await this._pool.query(query);
-
-    return new AddedReply({
-      ...result.rows[0],
-    });
   }
 }
 

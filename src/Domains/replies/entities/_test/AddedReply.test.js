@@ -14,7 +14,7 @@ describe('a AddedReply entities', () => {
     );
   });
 
-  it('should throw error when payload did not contain needed property', () => {
+  it('should throw error when payload did not meet data type spesification', () => {
     // Arrange
     const payload = {
       id: 123,
