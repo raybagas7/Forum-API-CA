@@ -33,6 +33,8 @@ const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseC
 const GetDetailThreadUseCase = require('../Applications/use_case/GetDetailThreadUseCase');
 const AddNewRepliesUseCase = require('../Applications/use_case/AddNewRepliesUseCase');
 const DeleteReplyUseCase = require('../Applications/use_case/DeleteReplyUseCase');
+const ReplyRepository = require('../Domains/replies/ReplyRepository');
+const ReplyRepositoryPostgres = require('./repository/ReplyRepositoryPostgres');
 
 // creating container
 const container = createContainer();
@@ -89,6 +91,18 @@ container.register([
         {
           concrete: nanoid,
         },
+      ],
+    },
+  },
+  {
+    key: ReplyRepository.name,
+    Class: ReplyRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        { concrete: nanoid },
       ],
     },
   },
@@ -172,6 +186,10 @@ container.register([
           internal: CommentRepository.name,
         },
         {
+          name: 'replyRepository',
+          internal: ReplyRepository.name,
+        },
+        {
           name: 'threadRepository',
           internal: ThreadRepository.name,
         },
@@ -215,8 +233,8 @@ container.register([
       injectType: 'destructuring',
       dependencies: [
         {
-          name: 'commentRepository',
-          internal: CommentRepository.name,
+          name: 'replyRepository',
+          internal: ReplyRepository.name,
         },
       ],
     },

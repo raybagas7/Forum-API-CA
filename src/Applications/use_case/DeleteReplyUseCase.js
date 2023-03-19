@@ -1,12 +1,12 @@
 class DeleteReplyUseCase {
-  constructor({ commentRepository }) {
-    this._commentRepository = commentRepository;
+  constructor({ replyRepository }) {
+    this._replyRepository = replyRepository;
   }
 
   async execute(threadId, commentId, replyId, owner) {
     this._validateParameters(threadId, commentId, replyId, owner);
-    await this._commentRepository.verifyReplyOwner(replyId, owner);
-    await this._commentRepository.deleteReplyById(threadId, commentId, replyId);
+    await this._replyRepository.verifyReplyOwner(replyId, owner);
+    await this._replyRepository.deleteReplyById(threadId, commentId, replyId);
   }
 
   _validateParameters(threadId, commentId, replyId, owner) {

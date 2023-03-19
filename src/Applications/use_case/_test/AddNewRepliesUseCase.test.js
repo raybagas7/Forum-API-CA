@@ -1,6 +1,7 @@
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
-const AddedReply = require('../../../Domains/comments/entities/AddedReply');
-const NewReply = require('../../../Domains/comments/entities/NewReply');
+const AddedReply = require('../../../Domains/replies/entities/AddedReply');
+const NewReply = require('../../../Domains/replies/entities/NewReply');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const AddNewRepliesUseCase = require('../AddNewRepliesUseCase');
 
@@ -21,6 +22,7 @@ describe('AddNewRepliesUseCase', () => {
     });
 
     const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
     const mockThreadRepository = new ThreadRepository();
 
     mockCommentRepository.checkCommentAvailability = jest
@@ -29,13 +31,14 @@ describe('AddNewRepliesUseCase', () => {
     mockThreadRepository.checkThreadAvailability = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.addRepliesByCommentId = jest
+    mockReplyRepository.addRepliesByCommentId = jest
       .fn()
       .mockImplementation(() => Promise.resolve(expectedNewReply));
     mockCommentRepository;
 
     const getNewRepliesUseCase = new AddNewRepliesUseCase({
       commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
       threadRepository: mockThreadRepository,
     });
 
@@ -55,7 +58,7 @@ describe('AddNewRepliesUseCase', () => {
     expect(mockCommentRepository.checkCommentAvailability).toBeCalledWith(
       fakeCommentId
     );
-    expect(mockCommentRepository.addRepliesByCommentId).toBeCalledWith(
+    expect(mockReplyRepository.addRepliesByCommentId).toBeCalledWith(
       new NewReply({
         content: 'Replies on this comment',
       }),

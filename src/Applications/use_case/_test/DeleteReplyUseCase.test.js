@@ -1,4 +1,4 @@
-const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const DeleteReplyUseCase = require('../DeleteReplyUseCase');
 
 describe('DeleteReplyUseCase', () => {
@@ -45,17 +45,17 @@ describe('DeleteReplyUseCase', () => {
     const fakeCommentId = 'comment-123';
     const fakeReplyId = 'reply-123';
 
-    const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
 
-    mockCommentRepository.verifyReplyOwner = jest
+    mockReplyRepository.verifyReplyOwner = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.deleteReplyById = jest
+    mockReplyRepository.deleteReplyById = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
 
     const deleteReplyUseCase = new DeleteReplyUseCase({
-      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
@@ -67,11 +67,11 @@ describe('DeleteReplyUseCase', () => {
     );
 
     // Assert
-    expect(mockCommentRepository.verifyReplyOwner).toHaveBeenCalledWith(
+    expect(mockReplyRepository.verifyReplyOwner).toHaveBeenCalledWith(
       fakeReplyId,
       fakeOwnerId
     );
-    expect(mockCommentRepository.deleteReplyById).toHaveBeenCalledWith(
+    expect(mockReplyRepository.deleteReplyById).toHaveBeenCalledWith(
       fakeThreadId,
       fakeCommentId,
       fakeReplyId

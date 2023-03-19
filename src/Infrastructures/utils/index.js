@@ -25,7 +25,6 @@ const mapDBToModelDetailThread = (thread, comments, replies) => {
                 content: reply.content,
               };
             }
-
             return {
               id: reply.id,
               username: reply.username,

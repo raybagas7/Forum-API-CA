@@ -2,7 +2,6 @@ const CommentsTableHelper = require('../../../../tests/CommentsTableHelper');
 const ThreadsTableHelper = require('../../../../tests/ThreadsTableHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
-const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const AddedReply = require('../../../Domains/comments/entities/AddedReply');
