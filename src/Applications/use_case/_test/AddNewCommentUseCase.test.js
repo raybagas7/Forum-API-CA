@@ -27,7 +27,11 @@ describe('AddNewCommentUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.addComment = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(expectedNewComment));
+      .mockImplementation(() => Promise.resolve(new AddedComment({
+      id: 'comment-123',
+      content: 'Comment on this thread',
+      owner: 'user-123',
+    })));
 
     const getNewCommentUseCase = new AddNewCommentUseCase({
       commentRepository: mockCommentRepository,

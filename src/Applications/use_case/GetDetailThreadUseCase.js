@@ -1,5 +1,3 @@
-const { mapDBToModelDetailThread } = require('../../Infrastructures/utils');
-
 class GetDetailThreadUseCase {
   constructor({ threadRepository, commentRepository, replyRepository }) {
     this._threadRepository = threadRepository;
@@ -16,11 +14,48 @@ class GetDetailThreadUseCase {
       id
     );
 
-    return mapDBToModelDetailThread(
-      resultThreadData,
-      resultCommentsData,
-      resultRepliesData
-    );
+    const result = {
+      id: resultThreadData.id,
+      title: resultThreadData.title,
+      body: resultThreadData.body,
+      date: resultThreadData.date,
+      username: resultThreadData.username,
+      comments: resultCommentsData.map((comment) => {
+        if (comment.is_delete === false) {
+          return {
+            id: comment.id,
+            username: comment.username,
+            date: comment.date,
+            content: comment.content,
+            replies: resultRepliesData.flatMap((reply) => {
+              if (reply.is_delete === false) {
+                return {
+                  id: reply.id,
+                  username: reply.username,
+                  date: reply.date,
+                  content: reply.content,
+                };
+              }
+              return {
+                id: reply.id,
+                username: reply.username,
+                date: reply.date,
+                content: '**balasan telah dihapus**',
+              };
+            }),
+          };
+        } else {
+          return {
+            id: comment.id,
+            username: comment.username,
+            date: comment.date,
+            content: '**komentar telah dihapus**',
+          };
+        }
+      }),
+    };
+
+    return result;
   }
 
   _validateParameters(id) {

@@ -33,7 +33,7 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('addComment function', () => {
-    it('should perist new comment', async () => {
+    it('should persist new comment', async () => {
       // Arrange
       const newComment = new NewComment({
         content: 'This thread is about a new thread',
@@ -88,6 +88,52 @@ describe('CommentRepositoryPostgres', () => {
           owner: 'user-999',
         })
       );
+    });
+  });
+
+  describe('getCommentByThreadId', () => {
+    it('should return empty array if thread have no comments', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      const getComments = await commentRepository.getCommentByThreadId(
+        'thread-123'
+      );
+      expect(getComments).toHaveLength(0);
+      expect(getComments).toStrictEqual([]);
+    });
+    it('should return all comments from the thread', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      await CommentsTableHelper.addComment({ content: 'Test Comment' });
+      await CommentsTableHelper.addComment({
+        id: 'comment-456',
+        content: 'Test Comment2',
+      });
+
+      // Action & Assert
+      const getComments = await commentRepository.getCommentByThreadId(
+        'thread-123'
+      );
+
+      expect(getComments).toHaveLength(2);
+      expect(
+        getComments[0].id === 'comment-123' ||
+          getComments[0].id === 'comment-456'
+      ).toBeTruthy();
+      expect(
+        getComments[1].id === 'comment-123' ||
+          getComments[1].id === 'comment-456'
+      ).toBeTruthy();
     });
   });
 

@@ -7,6 +7,7 @@ const NewReply = require('../../../Domains/replies/entities/NewReply');
 const AddedReply = require('../../../Domains/replies/entities/AddedReply');
 const pool = require('../../database/postgres/pool');
 const ReplyRepositoryPostgres = require('../ReplyRepositoryPostgres');
+const RepliesTableHelper = require('../../../../tests/RepliesTableHelper');
 
 describe('ReplyRepositoryPostgres', () => {
   const threadPayload = {
@@ -26,6 +27,7 @@ describe('ReplyRepositoryPostgres', () => {
     await UsersTableTestHelper.cleanTable();
     await ThreadsTableHelper.cleanTable();
     await CommentsTableHelper.cleanTable();
+    await RepliesTableHelper.cleanTable();
   });
 
   afterAll(async () => {
@@ -96,6 +98,44 @@ describe('ReplyRepositoryPostgres', () => {
           owner: 'user-999',
         })
       );
+    });
+  });
+
+  describe('getReplyByThreadId', () => {
+    it('should return empty array if comment have no replies', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const replyRepository = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+      await CommentsTableHelper.addComment({ id: 'comment-123' });
+
+      //Action & Assert
+      const getReplies = await replyRepository.getReplyByThreadId('thread-123');
+      expect(getReplies).toHaveLength(0);
+      expect(getReplies).toStrictEqual([]);
+    });
+    it('should return all replies from the thread comment', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const replyRepository = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      await CommentsTableHelper.addComment({ id: 'comment-123' });
+      await RepliesTableHelper.addRepliesByCommentId({ id: 'reply-123' });
+      await RepliesTableHelper.addRepliesByCommentId({ id: 'reply-456' });
+
+      const getReplies = await replyRepository.getReplyByThreadId('thread-123');
+      expect(getReplies).toHaveLength(2);
+      expect(
+        getReplies[0].id === 'reply-123' || getReplies[0].id === 'reply-456'
+      ).toBeTruthy();
+      expect(
+        getReplies[1].id === 'reply-123' || getReplies[1].id === 'reply-456'
+      ).toBeTruthy();
     });
   });
 

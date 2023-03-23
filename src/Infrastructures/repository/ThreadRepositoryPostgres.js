@@ -1,8 +1,6 @@
-const InvariantError = require('../../Commons/exceptions/InvariantError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedThread = require('../../Domains/threads/entities/AddedThread');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
-const { mapDBToModelDetailThread } = require('../utils');
 
 class ThreadRepositoryPostgres extends ThreadRepository {
   constructor(pool, idGenerator) {
@@ -57,32 +55,6 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     }
 
     return resultThread.rows[0];
-
-    // const queryComments = {
-    //   text: `SELECT comments.*, users.username
-    //   FROM comments
-    //   LEFT JOIN users ON comments.owner = users.id
-    //   WHERE thread_id = $1`,
-    //   values: [id],
-    // };
-
-    // const resultComments = await this._pool.query(queryComments);
-
-    // const queryReplies = {
-    //   text: `SELECT replies.*, users.username
-    //   FROM replies
-    //   LEFT JOIN users ON replies.owner = users.id
-    //   WHERE replies.thread_id = $1
-    //   ORDER BY date`,
-    //   values: [id],
-    // };
-    // const resultReplies = await this._pool.query(queryReplies);
-
-    // return mapDBToModelDetailThread(
-    //   resultThread.rows[0],
-    //   resultComments.rows,
-    //   resultReplies.rows
-    // );
   }
 }
 
