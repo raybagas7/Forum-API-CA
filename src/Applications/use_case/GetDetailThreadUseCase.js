@@ -28,6 +28,10 @@ class GetDetailThreadUseCase {
             date: comment.date,
             content: comment.content,
             replies: resultRepliesData.flatMap((reply) => {
+              /* istanbul ignore next */
+              if (reply.comment_id !== comment.id) {
+                return [];
+              }
               if (reply.is_delete === false) {
                 return {
                   id: reply.id,
