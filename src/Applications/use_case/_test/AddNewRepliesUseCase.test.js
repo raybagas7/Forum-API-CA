@@ -34,11 +34,10 @@ describe('AddNewRepliesUseCase', () => {
     mockReplyRepository.addRepliesByCommentId = jest
       .fn()
       .mockImplementation(() => Promise.resolve(new AddedReply({
-      id: 'reply-123',
-      content: 'Replies on this comment',
-      owner: 'user-123',
-    })));
-    mockCommentRepository;
+        id: 'reply-123',
+        content: 'Replies on this comment',
+        owner: 'user-123',
+      })));
 
     const getNewRepliesUseCase = new AddNewRepliesUseCase({
       commentRepository: mockCommentRepository,
@@ -51,16 +50,16 @@ describe('AddNewRepliesUseCase', () => {
       useCasePayload,
       fakeOwner,
       fakeThreadId,
-      fakeCommentId
+      fakeCommentId,
     );
 
     // Assert
     expect(addedReply).toStrictEqual(expectedNewReply);
     expect(mockThreadRepository.checkThreadAvailability).toBeCalledWith(
-      fakeThreadId
+      fakeThreadId,
     );
     expect(mockCommentRepository.checkCommentAvailability).toBeCalledWith(
-      fakeCommentId
+      fakeCommentId,
     );
     expect(mockReplyRepository.addRepliesByCommentId).toBeCalledWith(
       new NewReply({
@@ -68,7 +67,7 @@ describe('AddNewRepliesUseCase', () => {
       }),
       fakeOwner,
       fakeThreadId,
-      fakeCommentId
+      fakeCommentId,
     );
   });
 });

@@ -15,12 +15,12 @@ class DeleteCommentUseCase {
     }
 
     if (
-      typeof threadId !== 'string' ||
-      typeof commentId !== 'string' ||
-      typeof owner !== 'string'
+      typeof threadId !== 'string'
+      || typeof commentId !== 'string'
+      || typeof owner !== 'string'
     ) {
       throw new Error(
-        'DELETE_COMMENT_USE_CASE.ID_NOT_MEET_DATA_TYPE_SPECIFICATION'
+        'DELETE_COMMENT_USE_CASE.ID_NOT_MEET_DATA_TYPE_SPECIFICATION',
       );
     }
   }

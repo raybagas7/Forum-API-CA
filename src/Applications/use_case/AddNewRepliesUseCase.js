@@ -15,7 +15,7 @@ class AddNewRepliesUseCase {
       newReply,
       owner,
       threadId,
-      commentId
+      commentId,
     );
   }
 }

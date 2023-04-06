@@ -14,9 +14,9 @@ class AddedReply {
     }
 
     if (
-      typeof id !== 'string' ||
-      typeof content !== 'string' ||
-      typeof owner !== 'string'
+      typeof id !== 'string'
+      || typeof content !== 'string'
+      || typeof owner !== 'string'
     ) {
       throw new Error('ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }

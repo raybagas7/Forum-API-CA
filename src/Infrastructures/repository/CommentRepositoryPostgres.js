@@ -2,6 +2,7 @@ const AuthorizationError = require('../../Commons/exceptions/AuthorizationError'
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
 const AddedComment = require('../../Domains/comments/entities/AddedComment');
+
 class CommentRepositoryPostgres extends CommentRepository {
   constructor(pool, idGenerator) {
     super();
@@ -27,10 +28,13 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async getCommentByThreadId(id) {
     const queryComments = {
-      text: `SELECT comments.*, users.username
+      text: `SELECT comments.*, users.username, COUNT(likes.is_like) filter (where likes.is_like = true) AS likes
       FROM comments
       LEFT JOIN users ON comments.owner = users.id
-      WHERE thread_id = $1`,
+      LEFT OUTER JOIN likes ON comments.id = likes.comment_id
+      WHERE thread_id = $1
+      GROUP BY comments.id, users.username
+      ORDER BY comments.date;`,
       values: [id],
     };
 

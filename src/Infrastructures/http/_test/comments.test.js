@@ -1,5 +1,6 @@
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
 const CommentsTableHelper = require('../../../../tests/CommentsTableHelper');
+const LikesTableHelper = require('../../../../tests/LikesTableHelper');
 const ThreadsTableHelper = require('../../../../tests/ThreadsTableHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const container = require('../../container');
@@ -72,6 +73,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
     await UsersTableTestHelper.cleanTable();
     await AuthenticationsTableTestHelper.cleanTable();
     await CommentsTableHelper.cleanTable();
+    await LikesTableHelper.cleanTable();
   });
 
   describe('when POST /threads/{threadId}/comments', () => {
@@ -159,7 +161,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       // Action
       const response = await server.inject({
         method: 'POST',
-        url: `/threads/xxx/comments`,
+        url: '/threads/xxx/comments',
         payload: requestPayload,
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -207,9 +209,9 @@ describe('/threads/{threadId}/comment endpoint', () => {
       // Action
       const response = await server.inject({
         method: 'POST',
-        url: `/threads/xxx/comments`,
+        url: '/threads/xxx/comments',
         payload: requestPayload,
-        headers: { Authorization: `Bearer xxx` },
+        headers: { Authorization: 'Bearer xxx' },
       });
 
       // Assert
@@ -217,7 +219,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       expect(response.statusCode).toEqual(401);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make a new thread, authorization is invalid'
+        'Failed to make a new thread, authorization is invalid',
       );
     });
   });
@@ -284,7 +286,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadId}/comments/${id}`,
-        headers: { Authorization: `Bearer token-123` },
+        headers: { Authorization: 'Bearer token-123' },
       });
 
       // Assert
@@ -292,7 +294,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       expect(response.statusCode).toEqual(401);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make a new thread, authorization is invalid'
+        'Failed to make a new thread, authorization is invalid',
       );
     });
 
@@ -405,7 +407,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       // Action
       const response = await server.inject({
         method: 'POST',
-        url: `/threads/xxx/comments/xxx/replies`,
+        url: '/threads/xxx/comments/xxx/replies',
         payload: requestPayload,
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -444,7 +446,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
         method: 'POST',
         url: `/threads/${threadId}/comments/${id}/replies`,
         payload: requestPayload,
-        headers: { Authorization: `Bearer xxx` },
+        headers: { Authorization: 'Bearer xxx' },
       });
 
       // Assert
@@ -452,7 +454,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       expect(response.statusCode).toEqual(401);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make a new thread, authorization is invalid'
+        'Failed to make a new thread, authorization is invalid',
       );
     });
   });
@@ -549,7 +551,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadId}/comments/${id}/replies/${replyId}`,
-        headers: { Authorization: `Bearer xxx` },
+        headers: { Authorization: 'Bearer xxx' },
       });
 
       // Assert
@@ -557,7 +559,7 @@ describe('/threads/{threadId}/comment endpoint', () => {
       expect(response.statusCode).toEqual(401);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make a new thread, authorization is invalid'
+        'Failed to make a new thread, authorization is invalid',
       );
     });
 
@@ -595,6 +597,77 @@ describe('/threads/{threadId}/comment endpoint', () => {
       expect(response.statusCode).toEqual(404);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual("Reply doesn't exist");
+    });
+  });
+
+  describe('when PUT /threads/{threadId}/comments/{commentId}/likes', () => {
+    it('should response 200 and add new likes', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'New comment',
+      };
+      const server = await createServer(container);
+
+      // Add Comment
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedComment: { id },
+        },
+      } = JSON.parse(responseComment.payload);
+
+      // Action
+      const response = await server.inject({
+        method: 'PUT',
+        url: `/threads/${threadId}/comments/${id}/likes`,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+    });
+
+    it('should response 401 when unauthorized', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'New comment',
+      };
+      const server = await createServer(container);
+
+      // Add Comment
+      const responseComment = await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const {
+        data: {
+          addedComment: { id },
+        },
+      } = JSON.parse(responseComment.payload);
+
+      // Action
+      const response = await server.inject({
+        method: 'PUT',
+        url: `/threads/${threadId}/comments/${id}/likes`,
+        headers: { Authorization: 'Bearer xxx' },
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual(
+        'Failed to make a new thread, authorization is invalid',
+      );
     });
   });
 });

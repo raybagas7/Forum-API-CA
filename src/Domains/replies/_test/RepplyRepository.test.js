@@ -7,16 +7,16 @@ describe('ReplyRepository interface', () => {
 
     // Action & Assert
     await expect(
-      replyRepository.addRepliesByCommentId({})
+      replyRepository.addRepliesByCommentId({}),
     ).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
     await expect(replyRepository.getReplyByThreadId('')).rejects.toThrowError(
-      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(replyRepository.deleteReplyById('')).rejects.toThrowError(
-      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(replyRepository.verifyReplyOwner('')).rejects.toThrowError(
-      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+      'REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
   });
 });

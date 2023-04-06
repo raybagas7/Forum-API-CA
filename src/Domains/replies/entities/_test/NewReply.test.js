@@ -7,7 +7,7 @@ describe('a NewReply entitis', () => {
 
     // Action & Assert
     expect(() => new NewReply(payload)).toThrowError(
-      'NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY'
+      'NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
@@ -19,7 +19,7 @@ describe('a NewReply entitis', () => {
 
     // Action & Assert
     expect(() => new NewReply(payload)).toThrowError(
-      'NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION'
+      'NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 

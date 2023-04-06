@@ -10,7 +10,7 @@ describe('a AddedComment entities', () => {
 
     // Action & Assert
     expect(() => new AddedComment(payload)).toThrowError(
-      'ADDED_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY'
+      'ADDED_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY',
     );
   });
 
@@ -24,7 +24,7 @@ describe('a AddedComment entities', () => {
 
     // Action & Assert
     expect(() => new AddedComment(payload)).toThrowError(
-      'ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION'
+      'ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 

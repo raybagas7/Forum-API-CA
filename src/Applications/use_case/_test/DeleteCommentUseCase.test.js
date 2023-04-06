@@ -9,14 +9,14 @@ describe('DeleteCommentUseCase.test', () => {
 
     // Action & Assert
     await expect(
-      deleteCommentUseCase.execute(fakeOwnerId)
+      deleteCommentUseCase.execute(fakeOwnerId),
     ).rejects.toThrowError(
-      'DELETE_COMMENT_USE_CASE.NOT_CONTAIN_NEEDED_PARAMETERS'
+      'DELETE_COMMENT_USE_CASE.NOT_CONTAIN_NEEDED_PARAMETERS',
     );
   });
 
   it('should throw error if owner id or comment id not string type', async () => {
-    //Arrange
+    // Arrange
     const fakeThreadId = true;
     const fakeOwnerId = 123;
     const fakeCommentId = ['comment-id'];
@@ -25,9 +25,9 @@ describe('DeleteCommentUseCase.test', () => {
 
     // Action & Assert
     await expect(
-      deleteCommentUseCase.execute(fakeThreadId, fakeCommentId, fakeOwnerId)
+      deleteCommentUseCase.execute(fakeThreadId, fakeCommentId, fakeOwnerId),
     ).rejects.toThrowError(
-      'DELETE_COMMENT_USE_CASE.ID_NOT_MEET_DATA_TYPE_SPECIFICATION'
+      'DELETE_COMMENT_USE_CASE.ID_NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 
@@ -53,17 +53,17 @@ describe('DeleteCommentUseCase.test', () => {
     await deleteCommentUseCase.execute(
       fakeThreadId,
       fakeCommentId,
-      fakeOwnerId
+      fakeOwnerId,
     );
 
     // Assert
     expect(mockCommentRepository.verifyCommentOwner).toHaveBeenCalledWith(
       fakeCommentId,
-      fakeOwnerId
+      fakeOwnerId,
     );
     expect(mockCommentRepository.deleteCommentById).toHaveBeenCalledWith(
       fakeThreadId,
-      fakeCommentId
+      fakeCommentId,
     );
   });
 });

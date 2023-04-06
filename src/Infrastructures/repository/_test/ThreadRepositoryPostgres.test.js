@@ -33,7 +33,7 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeOwner = 'user-123';
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       // Action
@@ -55,13 +55,13 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeOwner = 'user-123';
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       // Action
       const addedThread = await threadRepositoryPostgres.addThread(
         newThread,
-        fakeOwner
+        fakeOwner,
       );
 
       // Assert
@@ -70,7 +70,7 @@ describe('ThreadRepositoryPostgres', () => {
           id: 'thread-123',
           title: 'New Thread',
           owner: 'user-123',
-        })
+        }),
       );
     });
   });
@@ -83,12 +83,12 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123'; // STUB
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       // Action & Assert
       expect(
-        threadRepositoryPostgres.checkThreadAvailability('xxx')
+        threadRepositoryPostgres.checkThreadAvailability('xxx'),
       ).rejects.toThrowError(NotFoundError);
     });
     it('should not throw NotFoundError if thread exist', async () => {
@@ -98,12 +98,12 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123'; // STUB
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       // Action & Assert
       expect(
-        threadRepositoryPostgres.checkThreadAvailability('thread-123')
+        threadRepositoryPostgres.checkThreadAvailability('thread-123'),
       ).resolves.not.toThrowError(NotFoundError);
     });
   });
@@ -116,12 +116,12 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123'; // STUB
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       // Action & Assert
       expect(
-        threadRepositoryPostgres.getDetailThread('xxx')
+        threadRepositoryPostgres.getDetailThread('xxx'),
       ).rejects.toThrowError(NotFoundError);
     });
 
@@ -137,12 +137,12 @@ describe('ThreadRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123'; // STUB
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       // Action &  Assert
       const getDetailThread = await threadRepositoryPostgres.getDetailThread(
-        fakeThreadId
+        fakeThreadId,
       );
 
       expect(getDetailThread.id).toBe(fakeThreadId);

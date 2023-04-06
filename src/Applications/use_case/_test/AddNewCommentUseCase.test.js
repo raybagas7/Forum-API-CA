@@ -28,10 +28,10 @@ describe('AddNewCommentUseCase', () => {
     mockCommentRepository.addComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve(new AddedComment({
-      id: 'comment-123',
-      content: 'Comment on this thread',
-      owner: 'user-123',
-    })));
+        id: 'comment-123',
+        content: 'Comment on this thread',
+        owner: 'user-123',
+      })));
 
     const getNewCommentUseCase = new AddNewCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -42,20 +42,20 @@ describe('AddNewCommentUseCase', () => {
     const addedComment = await getNewCommentUseCase.execute(
       useCasePayload,
       fakeOwner,
-      fakeThreadId
+      fakeThreadId,
     );
 
     // Assert
     expect(addedComment).toStrictEqual(expectedNewComment);
     expect(mockThreadRepository.checkThreadAvailability).toBeCalledWith(
-      fakeThreadId
+      fakeThreadId,
     );
     expect(mockCommentRepository.addComment).toBeCalledWith(
       new NewComment({
         content: 'Comment on this thread',
       }),
       fakeOwner,
-      fakeThreadId
+      fakeThreadId,
     );
   });
 });

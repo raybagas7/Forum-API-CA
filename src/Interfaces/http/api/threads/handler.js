@@ -10,13 +10,13 @@ class ThreadsHandler {
 
   async postThreadHandler(request, h) {
     const addNewThreadUseCase = this._container.getInstance(
-      AddNewThreadUseCase.name
+      AddNewThreadUseCase.name,
     );
     const { id: owner } = request.auth.credentials;
 
     const addedThread = await addNewThreadUseCase.execute(
       request.payload,
-      owner
+      owner,
     );
 
     const response = h.response({
@@ -31,7 +31,7 @@ class ThreadsHandler {
 
   async getDetailThreadHandler(request, h) {
     const getDetailThreadUseCase = this._container.getInstance(
-      GetDetailThreadUseCase.name
+      GetDetailThreadUseCase.name,
     );
 
     const { threadId: thread_id } = request.params;
