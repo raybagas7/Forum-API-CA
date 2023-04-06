@@ -5,6 +5,7 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const container = require('../../container');
 const pool = require('../../database/postgres/pool');
 const createServer = require('../createServer');
+
 let token;
 
 describe('/threads endpoint', () => {
@@ -96,7 +97,7 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make new a thread, the payload did not meet needed property'
+        'Failed to make new a thread, the payload did not meet needed property',
       );
     });
 
@@ -122,7 +123,7 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make a new thread, invalid data type'
+        'Failed to make a new thread, invalid data type',
       );
     });
 
@@ -148,7 +149,7 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make a new thread, title meets the characters length limit'
+        'Failed to make a new thread, title meets the characters length limit',
       );
     });
 
@@ -166,7 +167,7 @@ describe('/threads endpoint', () => {
         method: 'POST',
         url: '/threads',
         payload: requestPayload,
-        headers: { Authorization: `Bearer fakeToken` },
+        headers: { Authorization: 'Bearer fakeToken' },
       });
 
       // Assert
@@ -174,7 +175,7 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(401);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual(
-        'Failed to make a new thread, authorization is invalid'
+        'Failed to make a new thread, authorization is invalid',
       );
     });
   });

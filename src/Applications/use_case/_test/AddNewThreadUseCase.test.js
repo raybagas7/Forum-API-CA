@@ -23,10 +23,10 @@ describe('AddNewThread', () => {
     mockThreadRepository.addThread = jest
       .fn()
       .mockImplementation(() => Promise.resolve(new AddedThread({
-      id: 'thread-123',
-      title: 'New Thread',
-      owner: 'user-123',
-    })));
+        id: 'thread-123',
+        title: 'New Thread',
+        owner: 'user-123',
+      })));
 
     //* make use case instance */
     const getNewThreadUseCase = new AddNewThreadUseCase({
@@ -36,7 +36,7 @@ describe('AddNewThread', () => {
     // Action
     const addedThread = await getNewThreadUseCase.execute(
       useCasePayload,
-      fakeOwner
+      fakeOwner,
     );
 
     // Assert
@@ -46,7 +46,7 @@ describe('AddNewThread', () => {
         title: 'New Thread',
         body: 'This is a kind of thread',
       }),
-      fakeOwner
+      fakeOwner,
     );
   });
 });

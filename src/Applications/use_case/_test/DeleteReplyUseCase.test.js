@@ -10,9 +10,9 @@ describe('DeleteReplyUseCase', () => {
 
     // Action & Assert
     await expect(
-      deleteReplyUseCase.execute(fakeOwnerId, fakeThreadId)
+      deleteReplyUseCase.execute(fakeOwnerId, fakeThreadId),
     ).rejects.toThrowError(
-      'DELETE_REPLY_USE_CASE.NOT_CONTAIN_NEEDED_PARAMETERS'
+      'DELETE_REPLY_USE_CASE.NOT_CONTAIN_NEEDED_PARAMETERS',
     );
   });
 
@@ -31,10 +31,10 @@ describe('DeleteReplyUseCase', () => {
         fakeThreadId,
         fakeCommentId,
         fakeOwnerId,
-        fakeReplyId
-      )
+        fakeReplyId,
+      ),
     ).rejects.toThrowError(
-      'DELETE_REPLY_USE_CASE.ID_NOT_MEET_DATA_TYPE_SPECIFICATION'
+      'DELETE_REPLY_USE_CASE.ID_NOT_MEET_DATA_TYPE_SPECIFICATION',
     );
   });
 
@@ -63,18 +63,18 @@ describe('DeleteReplyUseCase', () => {
       fakeThreadId,
       fakeCommentId,
       fakeReplyId,
-      fakeOwnerId
+      fakeOwnerId,
     );
 
     // Assert
     expect(mockReplyRepository.verifyReplyOwner).toHaveBeenCalledWith(
       fakeReplyId,
-      fakeOwnerId
+      fakeOwnerId,
     );
     expect(mockReplyRepository.deleteReplyById).toHaveBeenCalledWith(
       fakeThreadId,
       fakeCommentId,
-      fakeReplyId
+      fakeReplyId,
     );
   });
 });

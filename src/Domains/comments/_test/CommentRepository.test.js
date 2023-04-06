@@ -7,22 +7,22 @@ describe('CommentRepository interface', () => {
 
     // Action & Assert
     await expect(commentRepository.addComment({})).rejects.toThrowError(
-      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(
-      commentRepository.getCommentByThreadId('')
+      commentRepository.getCommentByThreadId(''),
     ).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
     await expect(commentRepository.deleteCommentById('')).rejects.toThrowError(
-      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(commentRepository.deleteCommentById({})).rejects.toThrowError(
-      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(commentRepository.verifyCommentOwner('')).rejects.toThrowError(
-      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED'
+      'COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED',
     );
     await expect(
-      commentRepository.checkCommentAvailability('')
+      commentRepository.checkCommentAvailability(''),
     ).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });

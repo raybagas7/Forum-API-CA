@@ -2,6 +2,7 @@ const AddNewCommentUseCase = require('../../../../Applications/use_case/AddNewCo
 const AddNewRepliesUseCase = require('../../../../Applications/use_case/AddNewRepliesUseCase');
 const DeleteCommentUseCase = require('../../../../Applications/use_case/DeleteCommentUseCase');
 const DeleteReplyUseCase = require('../../../../Applications/use_case/DeleteReplyUseCase');
+const ToggleLikeUseCase = require('../../../../Applications/use_case/ToggleLikeUseCase');
 
 class CommentHandler {
   constructor(container) {
@@ -11,11 +12,12 @@ class CommentHandler {
     this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
     this.postReplyHandler = this.postReplyHandler.bind(this);
     this.deleteReplyHandler = this.deleteReplyHandler.bind(this);
+    this.likeCommentHandler = this.likeCommentHandler.bind(this);
   }
 
   async postCommentHandler(request, h) {
     const addNewCommentUseCase = this._container.getInstance(
-      AddNewCommentUseCase.name
+      AddNewCommentUseCase.name,
     );
 
     const { threadId: thread_Id } = request.params;
@@ -24,7 +26,7 @@ class CommentHandler {
     const addedComment = await addNewCommentUseCase.execute(
       request.payload,
       owner,
-      thread_Id
+      thread_Id,
     );
 
     const response = h.response({
@@ -39,7 +41,7 @@ class CommentHandler {
 
   async deleteCommentHandler(request) {
     const deleteCommentUseCase = this._container.getInstance(
-      DeleteCommentUseCase.name
+      DeleteCommentUseCase.name,
     );
 
     const { threadId: thread_Id, commentId: comment_id } = request.params;
@@ -52,7 +54,7 @@ class CommentHandler {
 
   async postReplyHandler(request, h) {
     const addNewRepliesUseCase = this._container.getInstance(
-      AddNewRepliesUseCase.name
+      AddNewRepliesUseCase.name,
     );
 
     const { threadId: thread_Id, commentId: comment_id } = request.params;
@@ -62,7 +64,7 @@ class CommentHandler {
       request.payload,
       owner,
       thread_Id,
-      comment_id
+      comment_id,
     );
 
     const response = h.response({
@@ -77,7 +79,7 @@ class CommentHandler {
 
   async deleteReplyHandler(request) {
     const deleteReplyUseCase = this._container.getInstance(
-      DeleteReplyUseCase.name
+      DeleteReplyUseCase.name,
     );
 
     const {
@@ -88,6 +90,22 @@ class CommentHandler {
     const { id: owner } = request.auth.credentials;
 
     await deleteReplyUseCase.execute(thread_Id, comment_id, reply_id, owner);
+
+    return { status: 'success' };
+  }
+
+  async likeCommentHandler(request) {
+    const toggleLikeUseCase = this._container.getInstance(
+      ToggleLikeUseCase.name,
+    );
+
+    const {
+      threadId: thread_Id,
+      commentId: comment_id,
+    } = request.params;
+    const { id: user_id } = request.auth.credentials;
+
+    await toggleLikeUseCase.execute(user_id, comment_id, thread_Id);
 
     return { status: 'success' };
   }

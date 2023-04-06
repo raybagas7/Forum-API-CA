@@ -47,7 +47,7 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeCommentId = 'comment-123';
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       // Action
@@ -56,7 +56,7 @@ describe('ReplyRepositoryPostgres', () => {
         newReply,
         fakeOwner,
         fakeThreadId,
-        fakeCommentId
+        fakeCommentId,
       );
 
       // Assert
@@ -77,7 +77,7 @@ describe('ReplyRepositoryPostgres', () => {
 
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       await CommentsTableHelper.addComment({ id: fakeCommentId });
@@ -87,7 +87,7 @@ describe('ReplyRepositoryPostgres', () => {
         newReply,
         fakeOwner,
         fakeThreadId,
-        fakeCommentId
+        fakeCommentId,
       );
 
       // Assert
@@ -96,7 +96,7 @@ describe('ReplyRepositoryPostgres', () => {
           id: 'reply-123',
           content: 'This is the reply',
           owner: 'user-999',
-        })
+        }),
       );
     });
   });
@@ -107,11 +107,11 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const replyRepository = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
       await CommentsTableHelper.addComment({ id: 'comment-123' });
 
-      //Action & Assert
+      // Action & Assert
       const getReplies = await replyRepository.getReplyByThreadId('thread-123');
       expect(getReplies).toHaveLength(0);
       expect(getReplies).toStrictEqual([]);
@@ -121,7 +121,7 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const replyRepository = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
 
       await CommentsTableHelper.addComment({ id: 'comment-123' });
@@ -131,10 +131,10 @@ describe('ReplyRepositoryPostgres', () => {
       const getReplies = await replyRepository.getReplyByThreadId('thread-123');
       expect(getReplies).toHaveLength(2);
       expect(
-        getReplies[0].id === 'reply-123' || getReplies[0].id === 'reply-456'
+        getReplies[0].id === 'reply-123' || getReplies[0].id === 'reply-456',
       ).toBeTruthy();
       expect(
-        getReplies[1].id === 'reply-123' || getReplies[1].id === 'reply-456'
+        getReplies[1].id === 'reply-123' || getReplies[1].id === 'reply-456',
       ).toBeTruthy();
     });
   });
@@ -145,7 +145,7 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const replyRepository = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
       const fakeOwner = 'user-123';
       const fakeReplyId = 'reply-999';
@@ -154,7 +154,7 @@ describe('ReplyRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(
-        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner)
+        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner),
       ).rejects.toThrow(NotFoundError);
     });
 
@@ -163,7 +163,7 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const replyRepository = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
       const fakeOwner = 'user-123';
       const fakeReplyId = 'reply-123';
@@ -172,7 +172,7 @@ describe('ReplyRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(
-        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner)
+        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner),
       ).rejects.toThrow(AuthorizationError);
     });
 
@@ -183,17 +183,17 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeReplyId = 'reply-123';
       const replyRepository = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
       await CommentsTableHelper.addComment({ id: 'comment-123' });
       await CommentsTableHelper.addRepliesByCommentId({ owner: 'user-123' });
 
       // Action & Assert
       await expect(
-        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner)
+        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner),
       ).resolves.not.toThrow(NotFoundError);
       await expect(
-        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner)
+        replyRepository.verifyReplyOwner(fakeReplyId, fakeOwner),
       ).resolves.not.toThrow(AuthorizationError);
     });
   });
@@ -204,7 +204,7 @@ describe('ReplyRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const replyRepository = new ReplyRepositoryPostgres(
         pool,
-        fakeIdGenerator
+        fakeIdGenerator,
       );
       const fakeReplyId = 'reply-123';
       const fakeThreadId = 'thread-123';
@@ -216,7 +216,7 @@ describe('ReplyRepositoryPostgres', () => {
       const replyStatus = await replyRepository.deleteReplyById(
         fakeThreadId,
         fakeCommentId,
-        fakeReplyId
+        fakeReplyId,
       );
       expect(replyStatus.is_delete).toStrictEqual(true);
     });
