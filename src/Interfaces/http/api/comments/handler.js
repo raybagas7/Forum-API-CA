@@ -15,7 +15,7 @@ class CommentHandler {
 
   async postCommentHandler(request, h) {
     const addNewCommentUseCase = this._container.getInstance(
-      AddNewCommentUseCase.name
+      AddNewCommentUseCase.name,
     );
 
     const { threadId: thread_Id } = request.params;
@@ -24,7 +24,7 @@ class CommentHandler {
     const addedComment = await addNewCommentUseCase.execute(
       request.payload,
       owner,
-      thread_Id
+      thread_Id,
     );
 
     const response = h.response({
@@ -39,7 +39,7 @@ class CommentHandler {
 
   async deleteCommentHandler(request) {
     const deleteCommentUseCase = this._container.getInstance(
-      DeleteCommentUseCase.name
+      DeleteCommentUseCase.name,
     );
 
     const { threadId: thread_Id, commentId: comment_id } = request.params;
@@ -52,7 +52,7 @@ class CommentHandler {
 
   async postReplyHandler(request, h) {
     const addNewRepliesUseCase = this._container.getInstance(
-      AddNewRepliesUseCase.name
+      AddNewRepliesUseCase.name,
     );
 
     const { threadId: thread_Id, commentId: comment_id } = request.params;
@@ -62,7 +62,7 @@ class CommentHandler {
       request.payload,
       owner,
       thread_Id,
-      comment_id
+      comment_id,
     );
 
     const response = h.response({
@@ -77,7 +77,7 @@ class CommentHandler {
 
   async deleteReplyHandler(request) {
     const deleteReplyUseCase = this._container.getInstance(
-      DeleteReplyUseCase.name
+      DeleteReplyUseCase.name,
     );
 
     const {
