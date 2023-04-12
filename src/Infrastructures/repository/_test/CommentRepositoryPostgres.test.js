@@ -125,8 +125,6 @@ describe('CommentRepositoryPostgres', () => {
         'thread-123',
       );
 
-      console.log('thead', getComments);
-
       expect(getComments).toHaveLength(2);
       expect(
         getComments[0].id === 'comment-123'
