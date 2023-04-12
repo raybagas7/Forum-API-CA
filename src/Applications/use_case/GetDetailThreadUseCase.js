@@ -28,7 +28,6 @@ class GetDetailThreadUseCase {
               date: comment.date,
               content: comment.content,
               replies: resultRepliesData.flatMap((reply) => {
-              /* istanbul ignore next */
                 if (reply.comment_id !== comment.id) {
                   return [];
                 }
@@ -56,7 +55,6 @@ class GetDetailThreadUseCase {
             content: comment.content,
             likeCount: parseInt(comment.likes, 10),
             replies: resultRepliesData.flatMap((reply) => {
-              /* istanbul ignore next */
               if (reply.comment_id !== comment.id) {
                 return [];
               }

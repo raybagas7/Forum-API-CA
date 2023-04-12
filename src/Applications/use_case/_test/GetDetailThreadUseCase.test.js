@@ -379,4 +379,175 @@ describe('GetDetailThreadUseCase', () => {
     expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(id);
     expect(mockReplyRepository.getReplyByThreadId).toBeCalledWith(id);
   });
+
+  it('should orchestrating get thread action correctly with comments and replies with more than 0 likes and no replies in comment id', async () => {
+    // Arrange
+    const id = 'thread-123';
+
+    const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
+
+    mockThreadRepository.getDetailThread = jest.fn().mockImplementation(() => Promise.resolve({
+      id: 'thread-123',
+      title: 'sebuah thread',
+      body: 'sebuah body thread',
+      date: '2021-08-08T07:19:09.775Z',
+      username: 'dicoding',
+    }));
+
+    mockCommentRepository.getCommentByThreadId = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([
+        {
+          id: 'comment-123',
+          username: 'johndoe',
+          date: '2021-08-08T07:22:33.555Z',
+          content: 'sebuah comment',
+          likes: 2,
+          is_delete: false,
+        },
+        {
+          id: 'comment-321',
+          username: 'dicoding',
+          date: '2021-08-08T07:26:21.338Z',
+          content: '**komentar telah dihapus**',
+          is_delete: true,
+        },
+      ]));
+
+    mockReplyRepository.getReplyByThreadId = jest.fn()
+      .mockImplementation(() => Promise.resolve([
+        {
+          id: 'reply-123',
+          username: 'johndoe',
+          date: '2022-08-08T07:22:33.555Z',
+          content: 'sebuah reply',
+          is_delete: false,
+          comment_id: 'comment-xxx',
+        },
+      ]));
+
+    const getDetailThreadUseCase = new GetDetailThreadUseCase({
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
+    });
+
+    // Action
+    const detailedThread = await getDetailThreadUseCase.execute(id);
+
+    // Assert
+    expect(detailedThread).toStrictEqual({
+      id: 'thread-123',
+      title: 'sebuah thread',
+      body: 'sebuah body thread',
+      date: '2021-08-08T07:19:09.775Z',
+      username: 'dicoding',
+      comments: [
+        {
+          id: 'comment-123',
+          username: 'johndoe',
+          date: '2021-08-08T07:22:33.555Z',
+          content: 'sebuah comment',
+          likeCount: 2,
+          replies: [],
+        },
+        {
+          id: 'comment-321',
+          username: 'dicoding',
+          date: '2021-08-08T07:26:21.338Z',
+          content: '**komentar telah dihapus**',
+        },
+      ],
+    });
+    expect(mockThreadRepository.getDetailThread).toBeCalledWith(id);
+    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(id);
+    expect(mockReplyRepository.getReplyByThreadId).toBeCalledWith(id);
+  });
+
+  it('should orchestrating get thread action correctly with comments and replies with 0 likes and no replies in comment id', async () => {
+    // Arrange
+    const id = 'thread-123';
+
+    const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
+
+    mockThreadRepository.getDetailThread = jest.fn().mockImplementation(() => Promise.resolve({
+      id: 'thread-123',
+      title: 'sebuah thread',
+      body: 'sebuah body thread',
+      date: '2021-08-08T07:19:09.775Z',
+      username: 'dicoding',
+    }));
+
+    mockCommentRepository.getCommentByThreadId = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve([
+        {
+          id: 'comment-123',
+          username: 'johndoe',
+          date: '2021-08-08T07:22:33.555Z',
+          content: 'sebuah comment',
+          likes: 0,
+          is_delete: false,
+        },
+        {
+          id: 'comment-321',
+          username: 'dicoding',
+          date: '2021-08-08T07:26:21.338Z',
+          content: '**komentar telah dihapus**',
+          is_delete: true,
+        },
+      ]));
+
+    mockReplyRepository.getReplyByThreadId = jest.fn()
+      .mockImplementation(() => Promise.resolve([
+        {
+          id: 'reply-123',
+          username: 'johndoe',
+          date: '2022-08-08T07:22:33.555Z',
+          content: 'sebuah reply',
+          is_delete: false,
+          comment_id: 'comment-xxx',
+        },
+      ]));
+
+    const getDetailThreadUseCase = new GetDetailThreadUseCase({
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
+    });
+
+    // Action
+    const detailedThread = await getDetailThreadUseCase.execute(id);
+
+    // Assert
+    expect(detailedThread).toStrictEqual({
+      id: 'thread-123',
+      title: 'sebuah thread',
+      body: 'sebuah body thread',
+      date: '2021-08-08T07:19:09.775Z',
+      username: 'dicoding',
+      comments: [
+        {
+          id: 'comment-123',
+          username: 'johndoe',
+          date: '2021-08-08T07:22:33.555Z',
+          content: 'sebuah comment',
+          replies: [],
+        },
+        {
+          id: 'comment-321',
+          username: 'dicoding',
+          date: '2021-08-08T07:26:21.338Z',
+          content: '**komentar telah dihapus**',
+        },
+      ],
+    });
+    expect(mockThreadRepository.getDetailThread).toBeCalledWith(id);
+    expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(id);
+    expect(mockReplyRepository.getReplyByThreadId).toBeCalledWith(id);
+  });
 });
